@@ -2,10 +2,10 @@
 A plugin for raster based modeling of movement (cost surface, least-cost path).
 
 ## Requirements
-Featured algorithms run on Python Scikit-Image library, which is not included in regular QGIS installation. If missing, you should install the library with following command 
+Featured algorithms run on Python Scikit-Image library, which is not included in regular QGIS installation. If missing, you should install the library with the following command 
 ``` pip --default-timeout=1000 install scikit-image```
 
-In Windows, this is executed in OSGeo4W Shell (see my tutorial : https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/)
+In Windows, this is executed in OSGeo4W Shell (see my tutorial : https://landscapearchaeology.org/2018/installing-python-packages-in-qgis-3-for-windows/).
 
 ## Instalation
 Download the code (green button) and install manually in QGIS (Plugins >> Manage >> Install from ZIP).
