@@ -33,6 +33,8 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsProcessingProvider
 from .cost_surface import CostSurface
 from .cost_path import CostPath
+from .cost_zones import CostZones
+from .install_scikit import InstallScikit
 
 
 class MovementAnalysisProvider(QgsProcessingProvider):
@@ -56,8 +58,8 @@ class MovementAnalysisProvider(QgsProcessingProvider):
         """
         self.addAlgorithm(CostSurface())
         self.addAlgorithm(CostPath())
-        # add additional algorithms here
-        # self.addAlgorithm(MyOtherAlgorithm())
+        self.addAlgorithm(CostZones())
+        self.addAlgorithm(InstallScikit())
 
     def id(self):
         """
