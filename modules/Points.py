@@ -114,7 +114,7 @@ class Points:
     """
     # multiple parameters (numeric + field name) 
     # enable to set a default in case there is a problem, eg z = float(None)
-    def clean_parameters(self, z_obs, radius ,
+    def clean_parameters(self, 
                         z_targ=0,
                         radius_in =0,
                         azim_1 = 0, azim_2=0,
@@ -162,15 +162,14 @@ class Points:
             #addition for possible field values.
             #override with fixed parameters in case of problem 
             
-            try : z = float(feat[field_zobs])
-            except: z=z_obs
+           # try : z = float(feat[field_zobs])
+          #  except: z=z_obs
 
-            try : r = float(feat[field_radius]) 
-            except: r=radius
+         #   try : r = float(feat[field_radius]) 
+          #  except: r=radius
                 
             # obligatory prarameters        
-            self.pt[key]={"id":id1, "z":z ,  "radius" : r,
-                          "x_geog":x_geog, "y_geog" : y_geog }
+            self.pt[key]={"id":id1, "x_geog":x_geog, "y_geog" : y_geog }
 
             # optional
             if z_targ or field_ztarg:
@@ -436,7 +435,7 @@ class Points:
     
             id1= feat.id()
           
-            self.pt[ id1 ]={"id" : feat["ID"],
+            self.pt[ id1 ]={"id" : id1,  # TODO : FOR ID fields in table  "id" : feat["ID"],
                             "pix_coord" : (int((x_geog - x_min) / pix_size), 
                                            int((y_max - y_geog) / pix_size)), 
                             # geog. coords are only used for writing vectors
