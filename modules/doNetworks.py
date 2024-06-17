@@ -70,14 +70,18 @@ def degrees(x_parents, y_parents):
     return d
 
 
-def peaks (parents_x, parents_y):
+def peaks (parents_x, parents_y, return_ids=False):
     #give nice IDs that can be translated into cell indices 
     child_ids = np.arange (parents_x.size).reshape(parents_x.shape).astype(int)
     
     #find tops (where indices of parents are not shifted)
     mask= child_ids == np.ravel_multi_index((parents_y , parents_x) , parents_x.shape)
 
-    return parents_x[mask], parents_y[mask]
+    if return_ids :  
+        child_ids[~mask]=-1 ; return child_ids
+    
+    else: return parents_x[mask], parents_y[mask]
+
 
 """
 
@@ -119,10 +123,12 @@ def links (dem):
             # test the opposite side 
             if i: a, a_i, b, b_i = b, b_i, a, a_i 
           
-            # correction for pixel diagonals : multiplication is cheaper than division ... *(1 / root2) ??
+            # correction for pixel diagonals : sqrt 2
             # ! diagonal indices are  even 
-            if a_i in [0,2,6,8]:           
-                hgt =  dem [a]+ (dem[b] - dem[a]) / 1.414213562373095 
+            if a_i in [0,2,6,8]:   
+                
+                #problem with zero division use multiplication (1/1.4142)
+                hgt =  dem [a]+ (dem[b] - dem[a])*.7071
        
             else: hgt = dem[b]
 
