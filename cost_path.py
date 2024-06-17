@@ -50,7 +50,9 @@ from qgis.core import (QgsProcessing,
 
 from osgeo import gdal
 import numpy as np
-from skimage import graph
+try:
+    from skimage import graph
+except : pass
 
 from .modules import Raster as rst 
 from .modules  import Points as pts
@@ -170,6 +172,7 @@ class CostPath(QgsProcessingAlgorithm):
         # cost = surface cost * cellsize
         #SciKit calls this ANISOTROPIC : not true !! it's only geometric correction!
         sample = (1.0, 1.0) # could be : (dem.pix, dem.pix) = pixel size x and y
+        lg = graph.MCP_Geometric (data)
         
         dep_pts.network(dest_pts, override_radius_pix = radius/dem.pix)
         
@@ -177,30 +180,32 @@ class CostPath(QgsProcessingAlgorithm):
         cnt = 1
         for key, ob in dep_pts.pt.items():
             
-            pix_dep = [ob['pix_coord']]
+            pix_dep = [ob['pix_coord'][::-1]]
+            
             pix_dest =[] 
             for key, tg in ob['targets'].items() : 
-                pix_dest += [ tg['pix_coord']]
+                
+                pix_dest += [ tg['pix_coord'][::-1]]
+            
+            if not pix_dest : continue # skip if no destinations
                                              
-            lg = graph.MCP_Geometric (data, sampling=sample)
+           
        
             # Calculate the least-cost distance from the start cell to all other cells
-            lcd, backtrack = lg.find_costs(starts=pix_dep, ends = pix_dest)
+            lcd, backtrack = lg.find_costs(starts=pix_dep, ends = pix_dest) 
             
-            line =[]
+# This is slow !?
             for end in pix_dest:
                 #find traceback path
+                tcb = lg.traceback(end)
                 #to obtain geographical distance from pixelated :  * dem.pix)
-                line_pix = np.array(lg.traceback(end)) * dem.pix 
+                # swap x/y ==> [:,::-1] 
+                line_pix = np.array(tcb)[:,::-1] * dem.pix 
              
                 line_pix[:,0] += raster_x_min + half_pix
-                line_pix[:,1] = raster_y_max - line_pix[:, 1] - half_pix
+                line_pix[:,1] = raster_y_max - line_pix[:,1] - half_pix
                 
-                """ works, but ugly
-                for p in np.array(lg.traceback(end)):
-                    line +=[ QgsPoint(float(p[0] * dem.pix + raster_x_min + half_pix),
-                            dem.extent[3] - float(p[1] * dem.pix  - half_pix))]
-                """
+               
                 feat = QgsFeature()
                 feat.setGeometry(QgsGeometry.fromPolyline([QgsPoint(*i) for i in line_pix]))
 
@@ -209,13 +214,14 @@ class CostPath(QgsProcessingAlgorithm):
                 
                 #find matching target id (not guaranteed that scikit will be in order)
                 for key, tg in dest_pts.pt.items(): 
-                    if tg['pix_coord'] == end : break
+                    if tg['pix_coord'][::-1] == end : break
    
                 feat['Destination'] = tg['id']
                 feat['Cost'] =  float(lcd[end]) # the last point.                
            
                 sink.addFeature(feat, QgsFeatureSink.FastInsert) 
                 
+            if feedback.isCanceled(): return None    
             feedback.setProgress(int(cnt / len(dep_pts.pt) * 100))
             cnt += 1
         return {self.OUTPUT: dest_id}
