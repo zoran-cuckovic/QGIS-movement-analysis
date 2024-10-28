@@ -12,4 +12,4 @@ Download the code (green button) and install manually in QGIS (Plugins >> Manage
 ![image](https://github.com/zoran-cuckovic/QGIS-movement-analysis/assets/6622934/fc6e2ede-cf8e-4077-af68-b5f18f7fe263)
 
 ## Manual
-... work in process
+... work in progress
