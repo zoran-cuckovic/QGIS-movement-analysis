@@ -36,7 +36,7 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm, QgsProcessingParam
 from subprocess import Popen
 
 class InstallScikit(QgsProcessingAlgorithm):
-     # Don't know how to make a module with no output...
+        # Don't know how to make a module with no output...
     OUTPUT = 'OUTPUT'
     
     def initAlgorithm(self, config=None):
@@ -55,6 +55,8 @@ class InstallScikit(QgsProcessingAlgorithm):
             # A window opens, no need to handle feedback....
         
         return {self.OUTPUT:None}
+
+
 
     def name(self):
         """
@@ -89,7 +91,14 @@ class InstallScikit(QgsProcessingAlgorithm):
         formatting characters.
         """
         return 'Helpers'
+    
+    def shortHelpString(self):
+        h = """Attention: you should restart QGIS after the install. 
+        If this doesn't work, use the procedure described in the manual:
+        https://github.com/zoran-cuckovic/QGIS-movement-analysis """
 
+        return h
+    
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
 
