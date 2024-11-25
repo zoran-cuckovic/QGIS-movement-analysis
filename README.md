@@ -14,15 +14,21 @@ Download the code (green button) and install manually in QGIS (Plugins >> Manage
 
 ## Manual
 # Least cost path
-*Friction surface*: a raster where each pixel represents difficulty of movement (energy expenditure, time, etc.) 
+*Friction surface*: a raster where each pixel represents difficulty of movement (energy expenditure, time, etc.).
+
 *Departure points / destinations points*: two sets of points which will be connected by least cost paths. Same dataset can be used for both parameters, if needed. 
+
 *Maximum distance*: points beyond this limit will not be connected. 
-Output: a vector file (lines) of least cost paths. 
+
+*Output*: a vector file (lines) of least cost paths. 
 
 # Cost surface 
-*Friction surface*: a raster where each pixel represents difficulty of movement (energy expenditure, time, etc.) 
+*Friction surface*: a raster where each pixel represents difficulty of movement (energy expenditure, time, etc.).
+
 *Destination points*: a set of points for which the accumulated cost surfaces (ACS) will be calculated. 
+
 *Maximum distance*: areas beyond this limit will not be analysed. 
+
 *Inner buffer*: exclusion zone around each destination point which will be ingored. 
 
 *Analysis type*: 
