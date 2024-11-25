@@ -5,12 +5,12 @@
 [general]
 name=Movement Analysis
 qgisMinimumVersion=3.0
-description=Toolbox for raster based movement analysis: least-cost path, cost surface, accessibility.
+description=Toolbox for raster based movement analysis: least-cost path, accumulated cost surface, accessibility.
 version=0.1
 author=Zoran Čučković
 email=cuckovic.zoran@gmail.com
 
-about=Provide a brief description of the plugin and its purpose. TODO
+about=The Movement Analysis plugin features raster based algorithms such as accumulated cost surface, least cost path and accumulated paths. The calculations are based on Scikit Image library, which should be installed in QGIS Python. This library enables rapid calculations on large datasets. 
 
 tracker=https://github.com/zoran-cuckovic/QGIS-movement-analysis/issues
 repository=https://github.com/zoran-cuckovic/QGIS-movement-analysis/
@@ -23,7 +23,7 @@ hasProcessingProvider=yes
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=raster, cost surface, least-cost path
+tags=raster, accumulated cost surface, least-cost path
 
 homepage=https://github.com/zoran-cuckovic/QGIS-movement-analysis/
 category=Analysis
@@ -37,7 +37,7 @@ deprecated=False
 # Since QGIS 3.8, a comma separated list of plugins to be installed
 # (or upgraded) can be specified.
 # Check the documentation for more information.
-# plugin_dependencies=
+plugin_dependencies=
 
 Category of the plugin: Raster, Vector, Database or Web
 # category=
