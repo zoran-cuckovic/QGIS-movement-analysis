@@ -12,8 +12,8 @@ In Windows, this is executed in OSGeo4W Shell (see my tutorial : https://landsca
 Download the code (green button) and install manually in QGIS (Plugins >> Manage >> Install from ZIP).
 ![image](https://github.com/zoran-cuckovic/QGIS-movement-analysis/assets/6622934/fc6e2ede-cf8e-4077-af68-b5f18f7fe263)
 
-## Manual
-# Least cost path
+# Manual
+## Least cost path
 *Friction surface*: a raster where each pixel represents difficulty of movement (energy expenditure, time, etc.).
 
 *Departure points / destinations points*: two sets of points which will be connected by least cost paths. Same dataset can be used for both parameters, if needed. 
@@ -22,7 +22,7 @@ Download the code (green button) and install manually in QGIS (Plugins >> Manage
 
 *Output*: a vector file (lines) of least cost paths. 
 
-# Cost surface 
+## Cost surface 
 *Friction surface*: a raster where each pixel represents difficulty of movement (energy expenditure, time, etc.).
 
 *Destination points*: a set of points for which the accumulated cost surfaces (ACS) will be calculated. 
@@ -44,5 +44,5 @@ Download the code (green button) and install manually in QGIS (Plugins >> Manage
 *Output*: Accumulated cost surfaces / accumulated paths which connect to chosen locations. 
 If exclusive mode is chosen a supplementary traceback model will be produced, which registers moves from each pixel towards the most accessible destination. 
 
-# Helpers – SciKit installation module
+### Helpers – SciKit installation module
 * A convenience function to install SciKit in QGIS Python. Important: a restart of QGIS is necessary after the installation. 
