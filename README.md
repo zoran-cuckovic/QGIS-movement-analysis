@@ -1,5 +1,8 @@
 # Movement Analysis for QGIS
 
+![image](https://github.com/user-attachments/assets/db2152a1-d708-4c1d-b8b2-fa6ccfdd8a63)
+
+
 The Movement Analysis plugin features raster based algorithms such as accumulated cost surface, least cost path and accumulated paths. The calculations are based on Scikit Image library, which should be installed in QGIS Python. This library enables rapid calculations on large datasets. 
 
 ## Requirements
