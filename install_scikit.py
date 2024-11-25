@@ -36,14 +36,14 @@ from qgis.core import (QgsProcessing, QgsProcessingAlgorithm, QgsProcessingParam
 from subprocess import Popen
 
 class InstallScikit(QgsProcessingAlgorithm):
-        # Don't know how to make a module with no output...
+     # Don't know how to make a module with no output...
     OUTPUT = 'OUTPUT'
     
-    def initAlgorithm(self, config=None): 
+    def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
                 self.tr("Fake layer")))
-
+        
     def processAlgorithm(self, parameters, context, feedback):
         
         try: 
@@ -55,8 +55,6 @@ class InstallScikit(QgsProcessingAlgorithm):
             # A window opens, no need to handle feedback....
         
         return {self.OUTPUT:None}
-
-
 
     def name(self):
         """
