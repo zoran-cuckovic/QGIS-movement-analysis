@@ -33,17 +33,10 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.core import (QgsProcessing, QgsProcessingAlgorithm, QgsProcessingParameterFeatureSink)
 
-import subprocess
-import sys
-# pip in not allowed from code ....
-
-
-
+from subprocess import Popen
 
 class InstallScikit(QgsProcessingAlgorithm):
-        # Constants used to refer to parameters and outputs. They will be
-       # used when calling the algorithm from another algorithm, or when
-       # calling from the QGIS console.
+        # Don't know how to make a module with no output...
     OUTPUT = 'OUTPUT'
     
     def initAlgorithm(self, config=None): 
@@ -57,8 +50,9 @@ class InstallScikit(QgsProcessingAlgorithm):
             from skimage import graph
             feedback.setProgressText("Scikit-image is installed - all OK")
         except:
-            p=subprocess.check_call([sys.executable, "-m", "pip", "install", "scikit-image"])
-            print (p)
+            cmd = "Python -m pip install scikit-image"
+            p = Popen(cmd)
+            # A window opens, no need to handle feedback....
         
         return {self.OUTPUT:None}
 
