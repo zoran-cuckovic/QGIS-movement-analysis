@@ -166,7 +166,7 @@ class CostSurface(QgsProcessingAlgorithm):
        ##Peripheric=boolean True
        ##Anisotropic=boolean False
        ##Anisotropic_DEM=raster 
-    ANALYSIS_TYPES = ['cost_surface' , 'focal']
+    ANALYSIS_TYPES = ['Accumulated cost surface' , 'Accumulated paths']
     COMBINE_MODES = ['exclusive','addition', 'min', 'max', 'average']
    
 
@@ -192,14 +192,14 @@ class CostSurface(QgsProcessingAlgorithm):
     
         self.addParameter(QgsProcessingParameterNumber(
             self.RADIUS,
-            self.tr('Radius'),
+            self.tr('Maximum distance'),
             0, # QgsProcessingParameterNumber.Integer = 0
             5000, False, 0, 99999))
             
             
         self.addParameter(QgsProcessingParameterNumber(
             self.INNER_RADIUS,
-            self.tr('Inner radius'),
+            self.tr('Inner buffer'),
             0, # QgsProcessingParameterNumber.Integer = 0
             0, False, 0, 99999))
             
@@ -401,7 +401,7 @@ class CostSurface(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'Cost surface'
+        return 'Least cost surface'
 
     def displayName(self):
         """
