@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-TODO NODATA HANDLING !! =COST MAX
+!! TODO NODATA HANDLING !! =COST MAX
 
 /***************************************************************************
  MovementAnalysis
@@ -379,6 +379,11 @@ class CostSurface(QgsProcessingAlgorithm):
             dem.result = traceback 
             traceback_path = output_path.replace('.','_traceback.')
             dem.write_output(traceback_path)
+            
+            if analysis_type == 1: #'DRAINAGE'
+                
+                lcd = drainage (traceback)
+                                           
             dem.result = lcd
             
         
