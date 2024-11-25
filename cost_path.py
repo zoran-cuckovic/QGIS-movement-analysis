@@ -101,13 +101,13 @@ class CostPath(QgsProcessingAlgorithm):
             self.tr('Maximum distance'),
              defaultValue=10000))
         
-                   
+        """         
         self.addParameter(QgsProcessingParameterEnum (
             self.ANALYSIS_TYPE,
             self.tr('Analysis type'),
             self.ANALYSIS_TYPES, 
             defaultValue=0))
-            
+        """  
 
         self.addParameter(QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
@@ -224,6 +224,7 @@ class CostPath(QgsProcessingAlgorithm):
             if feedback.isCanceled(): return None    
             feedback.setProgress(int(cnt / len(dep_pts.pt) * 100))
             cnt += 1
+        sink = None
         return {self.OUTPUT: dest_id}
 
 
