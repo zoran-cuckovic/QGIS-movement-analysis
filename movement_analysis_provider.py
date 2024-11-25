@@ -58,7 +58,7 @@ class MovementAnalysisProvider(QgsProcessingProvider):
         """
         self.addAlgorithm(CostSurface())
         self.addAlgorithm(CostPath())
-        self.addAlgorithm(CostZones())
+        # self.addAlgorithm(CostZones()) work in progress
         self.addAlgorithm(InstallScikit())
 
     def id(self):
