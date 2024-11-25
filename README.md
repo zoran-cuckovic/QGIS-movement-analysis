@@ -22,7 +22,7 @@ Download the code (green button) and install manually in QGIS (Plugins >> Manage
 
 *Output*: a vector file (lines) of least cost paths. 
 
-## Cost surface 
+## Least cost surface 
 *Friction surface*: a raster where each pixel represents difficulty of movement (energy expenditure, time, etc.).
 
 *Destination points*: a set of points for which the accumulated cost surfaces (ACS) will be calculated. 
