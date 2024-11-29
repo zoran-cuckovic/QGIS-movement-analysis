@@ -189,19 +189,16 @@ class CostSurface(QgsProcessingAlgorithm):
                 self.tr('Destination points'),
                 [QgsProcessing.TypeVectorPoint]
             ))
-    
+        
         self.addParameter(QgsProcessingParameterNumber(
             self.RADIUS,
             self.tr('Maximum distance'),
-            0, # QgsProcessingParameterNumber.Integer = 0
-            5000, False, 0, 99999))
-            
+             defaultValue=10000))          
             
         self.addParameter(QgsProcessingParameterNumber(
             self.INNER_RADIUS,
             self.tr('Inner buffer'),
-            0, # QgsProcessingParameterNumber.Integer = 0
-            0, False, 0, 99999))
+             defaultValue=0))
             
                 
         self.addParameter(QgsProcessingParameterEnum (
