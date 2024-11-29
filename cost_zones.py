@@ -7,8 +7,8 @@
  Some descr
                               -------------------
         begin                : 2017-03-10
-        copyright            : (C) 2017 by some
-        email                : some
+        copyright            : (C) 2017 by Zoran Cuckovic
+        email                : 
  ***************************************************************************/
 
 /***************************************************************************
@@ -21,9 +21,9 @@
  ***************************************************************************/
 """
 
-__author__ = 'some'
+__author__ = 'Zoran Cuckovic'
 __date__ = '2017-03-10'
-__copyright__ = '(C) 2017 by some'
+__copyright__ = '(C) 2017 by Zoran Cuckovic'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -65,17 +65,6 @@ from .modules import doNetworks as nt
 
 
 class CostZones(QgsProcessingAlgorithm):
-    """This is an example algorithm that takes a vector layer and
-    creates a new one just with just those features of the input
-    layer that are selected.
-
-    It is meant to be used as an example of how to create your own
-    algorithms and explain methods and variables used to do it. An
-    algorithm like this will be available in all elements, and there
-    is not need for additional work.
-
-    All Processing algorithms should extend the GeoAlgorithm class.
-    """
 
     # Constants used to refer to parameters and outputs. They will be
     # used when calling the algorithm from another algorithm, or when
@@ -84,28 +73,21 @@ class CostZones(QgsProcessingAlgorithm):
 
     TRACEBACK = 'TRACEBACK'
     COST_SURF = 'COST_SURF'
-    DIRECTION = 'DIRECTION'
+    
     MAX_COST = 'MAX_COST'
     OUTPUT_RASTER = 'OUTPUT_RASTER'
 
     def initAlgorithm(self, config):
 
         
-
-        self.addParameter(QgsProcessingParameterRasterLayer
-                          (self.TRACEBACK,
-            self.tr('Traceback raster')))
-        
         self.addParameter(QgsProcessingParameterRasterLayer
                           (self.COST_SURF,
             self.tr('Cumulative cost raster')))
-
-        
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.DIRECTION,
-            self.tr('Reverse direction (downslope)'),
-            True))
-
+            
+        self.addParameter(QgsProcessingParameterRasterLayer
+                          (self.TRACEBACK,
+            self.tr('Traceback raster')))
+       
         self.addParameter(QgsProcessingParameterNumber(
             self.MAX_COST,
             self.tr('Maximum accumulated cost'),
@@ -118,33 +100,21 @@ class CostZones(QgsProcessingAlgorithm):
             self.tr("Output file")))
 
 
-
-
-
-# optional param
-#        self.addParameter(ParameterString(self.RADIUS,
-#                                          self.tr("SOME MOCK PARAMETER"),
-#                                                    '', optional=True)) 
-        # We add a vector layer as output
-      ##    NEW ?
-##                self.addParameter(ParameterSelection(self.RTYPE,
-##                                             self.tr('Output raster type'),
-##                self.TYPE, 5))
-
     def processAlgorithm(self, parameters, context, feedback):
         
-
-
-        tcb = self.parameterAsRasterLayer(parameters,self.TRACEBACK, context)
         cst = self.parameterAsRasterLayer(parameters,self.COST_SURF, context)
+        tcb = self.parameterAsRasterLayer(parameters,self.TRACEBACK, context)
         max_cst = self.parameterAsDouble(parameters,self.MAX_COST, context)
-#        direction = self.parameterAsBool(parameters,self.DIRECTION, context)
-#NOT USED !!
-     #   merge = self.parameterAsDouble(parameters,self.MERGE,context)
-        
+
         output_path = self.parameterAsOutputLayer(parameters,self.OUTPUT_RASTER,context)
 
-        d= gdal.Open(tcb.source())
+        if cst.source() == tcb.source():
+            try:
+                d = gdal.Open(tcb.source().replace ('.', '_traceback.' )  )
+                print (tcb.source().replace ('.', '_traceback.' ))
+            except : raise Exception("Traceback raster was not found !")
+            
+        else: d = gdal.Open(tcb.source())           
         r=d.ReadAsArray().astype(int)
         
         d2 = gdal.Open(cst.source())
@@ -229,7 +199,7 @@ class CostZones(QgsProcessingAlgorithm):
         return results
     
     def name(self):
-         return 'Cost zones'    
+         return 'Least cost zones'    
      
     def displayName(self):
         """
