@@ -93,7 +93,7 @@ class InstallScikit(QgsProcessingAlgorithm):
         return 'Helpers'
     
     def shortHelpString(self):
-        h = """Attention: you should restart QGIS after the install. 
+        h = """Attention: you should <b>restart QGIS</b> after the install. 
         If this doesn't work, use the procedure described in the manual:
         https://github.com/zoran-cuckovic/QGIS-movement-analysis """
 
