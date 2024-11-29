@@ -111,7 +111,7 @@ class CostPath(QgsProcessingAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
-            self.tr("Output file")))
+            self.tr("Least cost paths")))
 
     def processAlgorithm(self, parameters, context, feedback):
         
@@ -121,17 +121,20 @@ class CostPath(QgsProcessingAlgorithm):
         destinations = self.parameterAsSource(parameters, self.DESTINATIONS, context)
         radius =self.parameterAsInt(parameters, self.RADIUS, context)
         
-        analysis_type = self.parameterAsInt(parameters,self.ANALYSIS_TYPE,context)
+      #  analysis_type = self.parameterAsInt(parameters,self.ANALYSIS_TYPE,context)
         
-        output_path = self.parameterAsOutputLayer(parameters,self.OUTPUT,context)
-    
-        dem = rst.Raster(friction.source(), output_path)
+           
+        dem = rst.Raster(friction.source())
                
         dep_pts = pts.Points(departures)
         dest_pts = pts.Points(destinations) 
-              
+                     
         dep_pts.take(dem.extent, dem.pix)
         dest_pts.take(dem.extent, dem.pix)
+        
+        # Swap for efficiency (this is valid only for ISOTROPIC approach)
+        if dep_pts.count > dest_pts.count : 
+            dep_pts, dest_pts = dest_pts, dep_pts
         
         if dep_pts.count == 0 or dest_pts.count == 0 :
             err= "  \n ******* \n ERROR! \n No destination/departure points in the chosen area!"
@@ -224,7 +227,7 @@ class CostPath(QgsProcessingAlgorithm):
             if feedback.isCanceled(): return None    
             feedback.setProgress(int(cnt / len(dep_pts.pt) * 100))
             cnt += 1
-        sink = None
+   
         return {self.OUTPUT: dest_id}
 
 
