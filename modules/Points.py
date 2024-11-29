@@ -417,7 +417,7 @@ class Points:
         if not spatial_index: #for intersect, not very helpful ...?
             s_index = QgsSpatialIndex()
             for f in self.layer.getFeatures():
-                s_index.insertFeature(f)
+                s_index.addFeature(f)
             
         else: s_index = spatial_index
 
