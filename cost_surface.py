@@ -75,31 +75,6 @@ def drainage(traceback_skimage):
     parents_flat = np.ravel_multi_index((y_parent,x_parent), 
                    traceback.shape).flatten()
     
-    """ NOT USED : topo networks
-    ids, steps = nt.assign_ids(
-        x_parent, y_parent, give_step = True )
-    
-    #for average accum !
-    #slope = nt.slope(r, x_parent, y_parent)
-    
-    #not used (node degrees)
-    #degrees = nt.degrees(x_parent, y_parent)
-    
-    accum = np.ones (steps.shape)
-    # 1  NICE RESULT
-    # leave sinks only = those not in parent index  :)
-    if Peripheric: accum[y_parent, x_parent]=0
-    
-     # 3   accum top : INTERESTING
-    #accum = nt.degrees(x_parent, y_parent)
-    
-    # ACCUMULATION ALGO NOT CORRECT !!
-    out = nt.accum(x_parent, y_parent, steps, 
-                            accum, upwards = Centripetal)
-                            
-                            
-   
-    """
     #CUSTOM ACCUMULATION
     accum_values = np.ones(traceback.shape)
     live_cells = np.ones(traceback.shape)
@@ -131,7 +106,7 @@ def drainage(traceback_skimage):
         
         # bincount does not use indexing !!! ???
         # it returns the entire sequence of bins 
-        # EVEN THE VALUES NOT SUPPLIED !!
+        # ...EVEN THE VALUES NOT SUPPLIED !!
         # eg. for groups 2,2,3,3,5,8 =>0,1,2,3,4,5,6,7,8
         # we have to use the entire sequence of parent Ids to ensure correct indexing
         v = np.bincount(parents_flat, accum_values.flat).astype(int)
@@ -141,13 +116,14 @@ def drainage(traceback_skimage):
         #print (v.size, accum_values.size, parents_flat.size)
         accum_values.flat[idx] += v[idx]
         #accum_values.flat[idx] += step
-        # find sinks - those not being someones parent
+        # find sinks - those not being someone's parent
         # ?? this is not working : missing = np.in1d(idx, parents_flat[idx], invert = True)                    
         parents_flat[sinks2]= 0 # have to use the entire array
         missing = np.in1d(idx, parents_flat, invert = True) 
         sinks2 = idx[missing]
         
     return accum_values
+    
 
 class CostSurface(QgsProcessingAlgorithm):
         # Constants used to refer to parameters and outputs. They will be
@@ -193,12 +169,12 @@ class CostSurface(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(
             self.RADIUS,
             self.tr('Maximum distance'),
-             defaultValue=10000))          
+             QgsProcessingParameterNumber.Double, defaultValue=10000))          
             
         self.addParameter(QgsProcessingParameterNumber(
             self.INNER_RADIUS,
             self.tr('Inner buffer'),
-             defaultValue=0))
+              QgsProcessingParameterNumber.Double, defaultValue=0))
             
                 
         self.addParameter(QgsProcessingParameterEnum (
@@ -392,7 +368,7 @@ class CostSurface(QgsProcessingAlgorithm):
         
         
     
-        return {self.OUTPUT:None} #prevoiusly  ___ : output_path
+        return {self.OUTPUT:output_path} 
 
 
     def name(self):
