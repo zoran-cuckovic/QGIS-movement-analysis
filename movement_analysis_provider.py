@@ -35,6 +35,9 @@ from .cost_surface import CostSurface
 from .cost_path import CostPath
 from .cost_zones import CostZones
 from .install_scikit import InstallScikit
+# for the icon
+from os import path
+from PyQt5.QtGui import QIcon
 
 
 class MovementAnalysisProvider(QgsProcessingProvider):
@@ -58,7 +61,7 @@ class MovementAnalysisProvider(QgsProcessingProvider):
         """
         self.addAlgorithm(CostSurface())
         self.addAlgorithm(CostPath())
-        # self.addAlgorithm(CostZones()) work in progress
+        self.addAlgorithm(CostZones())
         self.addAlgorithm(InstallScikit())
 
     def id(self):
@@ -83,7 +86,7 @@ class MovementAnalysisProvider(QgsProcessingProvider):
         Should return a QIcon which is used for your provider inside
         the Processing toolbox.
         """
-        return QgsProcessingProvider.icon(self)
+        return QIcon(path.dirname(__file__) + '/icon.png')
 
     def longName(self):
         """
