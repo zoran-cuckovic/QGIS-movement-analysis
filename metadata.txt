@@ -6,7 +6,7 @@
 name=Movement Analysis
 qgisMinimumVersion=3.0
 description=Toolbox for raster based movement analysis: least-cost path, accumulated cost surface, accessibility.
-version=0.1
+version=0.1.1
 author=Zoran Čučković
 email=cuckovic.zoran@gmail.com
 
