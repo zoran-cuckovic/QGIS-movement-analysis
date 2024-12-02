@@ -48,21 +48,20 @@ from qgis.core import (QgsProcessing,
 
 from osgeo import gdal
 import numpy as np
-try:
-    from skimage import graph
-except: pass
+
+IMPORT_ERROR = False
+try: from skimage import graph
+except ImportError : IMPORT_ERROR = True  
+
 from .modules import Raster as rst 
 from .modules  import Points as pts
-from .modules import doNetworks as nt
 
 def drainage(traceback_skimage):
     traceback = traceback_skimage
     # print (np.unravel_index(traceback + 1, (3,3)))
     
-    # TopoNetworks create network (negative for draining)
-    #  x_parent, y_parent = nt.links(lcd * -1) 
     
-     #Scikit has totaly arbitrary indexing ....
+    # Scikit has totaly arbitrary indexing ....
     traceback[traceback >3 ] +=1
     traceback [traceback==-1] =4
     
@@ -75,9 +74,9 @@ def drainage(traceback_skimage):
     parents_flat = np.ravel_multi_index((y_parent,x_parent), 
                    traceback.shape).flatten()
     
-    #CUSTOM ACCUMULATION
+    # CUSTOM ACCUMULATION
     accum_values = np.ones(traceback.shape)
-    live_cells = np.ones(traceback.shape)
+   # live_cells = np.ones(traceback.shape)
     sinks = np.ones(traceback.shape)  
     
     # mark only sinks ! ( parents are not sinks :) 
@@ -94,15 +93,7 @@ def drainage(traceback_skimage):
     # center cell is always 1 ... (bit costly to count...)
    # while np.count_nonzero(live_cells) > 1:
 
-    while sinks2.size > 0 :
-        
-                        
-        """ OLD METHOD nicer but slow
-        mask = sinks == 1
-        s_y, s_x = y_parent[mask],x_parent[mask]
-        #add at - super SLOW
-        np.add.at(accum_values,(s_y, s_x), accum_values[mask])
-        """
+    while sinks2.size > 0 :   
         
         # bincount does not use indexing !!! ???
         # it returns the entire sequence of bins 
@@ -122,6 +113,7 @@ def drainage(traceback_skimage):
         missing = np.in1d(idx, parents_flat, invert = True) 
         sinks2 = idx[missing]
         
+       # print (sinks2)
     return accum_values
     
 
@@ -143,10 +135,13 @@ class CostSurface(QgsProcessingAlgorithm):
        ##Anisotropic=boolean False
        ##Anisotropic_DEM=raster 
     ANALYSIS_TYPES = ['Accumulated cost surface' , 'Accumulated paths']
-    COMBINE_MODES = ['exclusive','addition', 'min', 'max', 'average']
-   
+    COMBINE_MODES = ['exclusive', 'addition', 'min', 'max', 'average'] 
+       
 
     def initAlgorithm(self, config=None):
+    
+        if IMPORT_ERROR :  raise Exception (
+                "Scikit Image not installed ! Cannot proceed further.")   
         
         self.addParameter(
             QgsProcessingParameterRasterLayer(
@@ -196,6 +191,8 @@ class CostSurface(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         
+        
+        
         Anisotropic = 0 # NOT IMPLEMENTED
         
         Centripetal = 1
@@ -229,7 +226,7 @@ class CostSurface(QgsProcessingAlgorithm):
         dem.set_buffer(mode=(cumul_mode if cumul_mode < 4 else 1), live_memory = True)
         
         
-        if cumul_mode >= 4 :# AVERAGE :  track the number of visits per pixel
+        if cumul_mode == 4 :# AVERAGE :  track the number of visits per pixel
             #This is a hack : need a file on the disk to initialise
             dem_counter = rst.Raster(friction.source(), output_path)
             # Must be live memory (othewise writes to disk !)
@@ -251,7 +248,7 @@ class CostSurface(QgsProcessingAlgorithm):
         sample = (1,1) # could be : (dem.pix, dem.pix) = pixel size x and y
         
         
-        if cumul_mode: #otherwise the entire raster 
+        if cumul_mode >= 1: #otherwise the entire raster 
             dem.set_master_window(radius, background_value=0)
         
             dem.set_mask(radius//dem.pix) # pixelated radius...
@@ -340,15 +337,20 @@ class CostSurface(QgsProcessingAlgorithm):
                 
                 
             
-        else: # EXCLUSIVE
+        else: # EXCLUSIVE - NOT working for accumulation, not able to limit to a specific radius
             
             data = dem.open_raster()
-            lg = graph.MCP_Geometric (data , sampling=sample)
+            # cannot handle 0 or No Data
+            data[data < 0.000001]=0.000001
+           
+            lg = graph.MCP_Geometric (data)
+            
+            # !! distance mask not implemented (not existent in MCP ?)
          
             lcd, traceback = lg.find_costs(
-                # extract coord from dict ==> reverse x / y [::-1]
-                        starts=[ pt[i]['pix_coord'][::-1] for i in pt ])
-            
+                starts= [pt[i]['pix_coord'][::-1] for i in pt])
+                # extract coord from dict ==> reverse x - y [::-1]
+        
             dem.result = traceback 
             traceback_path = output_path.replace('.','_traceback.')
             dem.write_output(traceback_path)
