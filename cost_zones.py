@@ -91,7 +91,8 @@ class CostZones(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(
             self.MAX_COST,
             self.tr('Maximum accumulated cost'),
-            QgsProcessingParameterNumber.Double, 500, optional = True))
+            QgsProcessingParameterNumber.Double, 
+            defaultValue = 0))
         
 
         self.addParameter(
@@ -109,10 +110,11 @@ class CostZones(QgsProcessingAlgorithm):
         output_path = self.parameterAsOutputLayer(parameters,self.OUTPUT_RASTER,context)
 
         if cst.source() == tcb.source():
-            try:
-                d = gdal.Open(tcb.source().replace ('.', '_traceback.' )  )
-                print (tcb.source().replace ('.', '_traceback.' ))
-            except : raise Exception("Traceback raster was not found !")
+            try: d = gdal.Open(tcb.source().replace ('.', '_traceback.' )  )             
+            except : 
+                err = "Traceback raster was not found !"
+                feedback.reportError(err, fatalError = True)
+                raise Exception(err)
             
         else: d = gdal.Open(tcb.source())           
         r=d.ReadAsArray().astype(int)
