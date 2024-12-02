@@ -50,9 +50,10 @@ from qgis.core import (QgsProcessing,
 
 from osgeo import gdal
 import numpy as np
-try:
-    from skimage import graph
-except : pass
+    
+IMPORT_ERROR = False
+try: from skimage import graph
+except ImportError : IMPORT_ERROR = True 
 
 from .modules import Raster as rst 
 from .modules  import Points as pts
@@ -77,6 +78,9 @@ class CostPath(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         
+        if IMPORT_ERROR :  raise Exception (
+                "Scikit Image not installed ! Cannot proceed further.")      
+        
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.FRICTION_SURF,
@@ -99,7 +103,8 @@ class CostPath(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(
             self.RADIUS,
             self.tr('Maximum distance'),
-             defaultValue=10000))
+                QgsProcessingParameterNumber.Double,
+                defaultValue=10000))
         
         """         
         self.addParameter(QgsProcessingParameterEnum (
@@ -114,8 +119,7 @@ class CostPath(QgsProcessingAlgorithm):
             self.tr("Least cost paths")))
 
     def processAlgorithm(self, parameters, context, feedback):
-        
-        
+               
         friction = self.parameterAsRasterLayer(parameters,self.FRICTION_SURF, context)
         departures = self.parameterAsSource(parameters, self.DEPARTURES, context)
         destinations = self.parameterAsSource(parameters, self.DESTINATIONS, context)
